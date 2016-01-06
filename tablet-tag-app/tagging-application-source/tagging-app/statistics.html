@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<meta charset="utf-8">
+		<title>Tagging Application</title>
+		<meta name="generator" content="Bootply" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link href="css/bootstrap.min.css" rel="stylesheet">
+		<!--[if lt IE 9]>
+			<script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+		<![endif]-->
+		<link href="css/styles.css" rel="stylesheet">
+	</head>
+	<script src="js/jquery.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	
+	<script type="text/javascript">
+		
+		$(document).ready(function(){
+			
+			function show_occupancy_count()
+			{
+				$.ajax({
+						type:"GET",
+						dataType:"JSONP",
+						url: "http://10.129.23.30:7000/current-occupancy-count",
+						success:function(data)
+						{
+							console.log(data);
+							$('#counter').text(data);
+						}
+					});
+			}
+			
+			function show_prediction_accuracy()
+			{
+				$.ajax({
+						type:"GET",
+						dataType:"JSONP",
+						url: "http://10.129.23.30:7000/prediction-accuracy",
+						success:function(data)
+						{
+							console.log(data);
+							$('#accuracy').text(data);
+						}
+					});
+			}
+			
+			
+			setInterval(function(){
+				show_occupancy_count();
+				show_prediction_accuracy();
+				},5000) ;
+		});
+	</script>
+		
+	<body>
+<div class="navbar navbar-default navbar-static-top">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">Tag Yourself !</a>
+    </div>
+    <div class="collapse navbar-collapse">
+      <ul class="nav navbar-nav">
+        <li ><a href="index.html">Home</a></li>
+        <li class="active"><a href="statistics.html">Statistics</a></li>
+      </ul>
+      
+    </div><!--/.nav-collapse -->
+  </div>
+</div>
+
+<div class="container">
+  
+  <div class="row">
+	<div class="col-xs-3"> Current occupant count:</div>
+	<div class="col-xs-3" id="counter">3</div>
+  </div>
+  <br/><br/><br/>
+  <div class="row">
+	<div class="col-xs-3"> People present in the room:</div>
+	<div class="col-xs-3" id="plist"></div>
+  </div>
+  <br/><br/><br/>
+  <div class="row">
+	<div class="col-xs-3">Prediction Accuracy(%) </div>
+	<div class="col-xs-3" id="accuracy">0</div>
+  </div>
+  
+  
+  
+  
+  
+</div><!-- /.container -->
+	<!-- script references -->
+		
+	</body>
+</html>
+

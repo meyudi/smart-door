@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<meta charset="utf-8">
+		<title>Tagging Application</title>
+		<meta name="generator" content="Bootply" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link href="css/bootstrap.min.css" rel="stylesheet">
+		<!--[if lt IE 9]>
+			<script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+		<![endif]-->
+		<link href="css/styles.css" rel="stylesheet">
+	</head>
+	<script src="js/jquery.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script type="text/javascript" >
+		
+		var tag = "";
+		var predicted = "" ;
+		var  blink = 0 ;
+		var old_obj = null;
+		$(document).ready(function(){
+		
+				
+				function show_predicted_name()
+				{
+						$.ajax({
+						type:"GET",
+						dataType:"JSONP",
+						url: "http://10.129.23.30:7000/predicted-name",
+						success:function(data)
+								{
+									console.log(data);
+									predicted = data ;
+									
+									
+									if (data != '')
+									{
+											var obj = $('button[type=button][value='+data+']') // get the dom  element
+											old_obj = obj; //storing previous DOM object
+											if (obj != null) // handling wrong case: i dunno which one
+											{	
+												if (blink==0)
+												{
+														blink = 1;
+														obj.addClass('btn-success');
+														console.log(blink);
+												}
+												else if(blink ==1)
+												{
+														blink = 0;
+														obj.removeClass('btn-success');
+														console.log(blink);
+												}
+
+												
+											}
+									}
+									else if (data == '')
+									{
+											if (old_obj != null)
+											{
+													old_obj.removeClass('btn-success') ;
+													old_obj = null ;
+											}
+									}
+								}
+						});
+				}
+		
+		
+				function update_tag(tag)
+				{
+					$.ajax({
+						type:"GET",
+						dataType:"JSONP",
+						url:"http://10.129.23.30:7000/update-tag",
+						data:{'name':tag},
+						success:function(data){
+								console.log("Updated DB");
+								console.log(data)
+								if (data == "1")
+								{
+									var msg = "Thank you " + tag + " !";
+									setTimeout(function() { alert(msg); });
+									//tempAlert(msg, 3000);
+								}
+								else
+								{
+									var msg = "No update for " + tag + " !";
+									setTimeout(function() { alert(msg); });
+									//tempAlert(msg, 3000);
+								}
+							}
+					
+					});
+				}
+				
+				for(i = 1; i <=14 ; i++ )
+				{
+					var btn_id = "#tag_btn"+ i;
+					console.log(btn_id);
+					$(btn_id).click(function update()
+					{
+								console.log(this.value);
+								tag = this.value;
+								var confirm_str = "Confirm your name!\nTagged as " + tag +" ?";
+								var r = confirm(confirm_str);
+								if (r == true) {
+									console.log("Confirmed the tag");
+									update_tag(tag);
+									if (tag == predicted)
+									{
+											var obj = $('button[type=button][value='+tag+']') ;// get the dom  element
+											obj.removeClass('btn-success ');
+											location.reload(false);
+											
+									}
+									else{
+										    var obj = $('button[type=button][value='+predicted+']') ;// get the dom  element
+											obj.removeClass('btn-success ');
+											location.reload(false);
+											
+									}
+									
+								} else {
+									
+								}
+								//update_tag(tag)
+					});
+				}
+				
+				setInterval(function(){show_predicted_name()},1500) ;
+				
+		});
+	
+	</script>
+	
+	
+	<body>
+<div class="navbar navbar-default navbar-static-top">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">Tag Yourself !</a>
+    </div>
+    <div class="collapse navbar-collapse">
+      <ul class="nav navbar-nav">
+        <li class="active"><a href="#">Home</a></li>
+        <li ><a href="statistics.html">Statistics</a></li>
+      </ul>
+      
+    </div><!--/.nav-collapse -->
+  </div>
+</div>
+
+<div class="container">
+  
+  <div class="row">
+	  <div class="col-xs-3" >
+		<button type="button" class="btn btn-default btn-lg" value="uddhav" id="tag_btn1">
+			<span id="uddhav_txt">Uddhav </span>
+		</button>
+	  </div>
+	  <div class="col-xs-3">
+		<button type="button" class="btn btn-default btn-lg" value="vivekc" id="tag_btn2">
+			<span id="vivekc_txt">Vivek C</span>
+		</button>
+	  </div>
+	  <div class="col-xs-3">
+		<button type="button" class="btn btn-default btn-lg" value="anshul" id="tag_btn3">
+		Anshul
+		</button>
+	  </div>
+	  <div class="col-xs-3">
+		<button type="button" class="btn btn-default btn-lg" value="vitobha" id="tag_btn4">
+			Vitobha
+		</button>
+	  </div>
+	</div>
+	
+	</br></br></br>
+  <div class="row">
+	  <div class="col-xs-3">
+		<button type="button" class="btn btn-default btn-lg" value="kedar" id="tag_btn5">
+			Kedar
+		</button>
+	  </div>
+	  <div class="col-xs-3">
+		<button type="button" class="btn btn-default btn-lg" value="rohit" id="tag_btn6">
+			Rohit
+		</button>
+	  </div>
+	  <div class="col-xs-3">
+		<button type="button" class="btn btn-default btn-lg" value="chaitra" id="tag_btn7">
+		Chaitra
+		</button>
+	  </div>
+	  <div class="col-xs-3">
+		<button type="button" class="btn btn-default btn-lg" value="karanj" id="tag_btn8">
+			Karan J
+		</button>
+	  </div>
+	</div>
+	</br></br></br>
+	  <div class="row">
+	  <div class="col-xs-3">
+		<button type="button" class="btn btn-default btn-lg" value="karanp" id="tag_btn9">
+			Karan P
+		</button>
+	  </div>
+	  <div class="col-xs-3">
+		<button type="button" class="btn btn-default btn-lg" value="imran" id="tag_btn10">
+			Imran
+		</button>
+	  </div>
+	  <div class="col-xs-3">
+		<button type="button" class="btn btn-default btn-lg" value="vivekt" id="tag_btn11">
+		Vivek T
+		</button>
+	  </div>
+	  <div class="col-xs-3">
+		<button type="button" class="btn btn-default btn-lg" value="mayank" id="tag_btn12">
+			Mayank
+		</button>
+	  </div>
+	</div>
+	
+	</br></br></br>
+	  <div class="row">
+	  <div class="col-xs-3">
+		<button type="button" class="btn btn-default btn-lg" value="krithi" id="tag_btn13">
+			Krithi
+		</button>
+	  </div>
+	  <div class="col-xs-3">
+		<button type="button" class="btn btn-default btn-lg" value="guest" id="tag_btn14">
+			Guest
+		</button>
+	  </div>
+	  
+	</div>
+  
+</div><!-- /.container -->
+	<!-- script references -->
+		
+	</body>
+</html>
