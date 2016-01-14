@@ -23,51 +23,7 @@
 		$(document).ready(function(){
 		
 				
-				/*function show_predicted_name()
-				{
-						$.ajax({
-						type:"GET",
-						dataType:"JSONP",
-						url: "http://10.129.23.30:7000/predicted-name",
-						success:function(data)
-								{
-									console.log(data);
-									predicted = data ;
-									
-									
-									if (data != '')
-									{
-											var obj = $('button[type=button][value='+data+']') // get the dom  element
-											old_obj = obj; //storing previous DOM object
-											if (obj != null) // handling wrong case: i dunno which one
-											{	
-												if (blink==0)
-												{
-														blink = 1;
-														obj.addClass('btn-success');
-														console.log(blink);
-												}
-												else if(blink ==1)
-												{
-														blink = 0;
-														obj.removeClass('btn-success');
-														console.log(blink);
-												}
-
-												
-											}
-									}
-									else if (data == '')
-									{
-											if (old_obj != null)
-											{
-													old_obj.removeClass('btn-success') ;
-													old_obj = null ;
-											}
-									}
-								}
-						});
-				} */
+				
 		
 		
 				function make_entry(tag)
@@ -75,7 +31,7 @@
 					$.ajax({
 						type:"GET",
 						dataType:"JSONP",
-						url:"http://127.0.0.1:7000/out_entry",
+						url:"http://10.129.23.100:7000/out_entry",
 						data:{'name':tag},
 						success:function(data){
 								console.log("Updated DB");
@@ -100,33 +56,46 @@
 
 				function update_people_names(start_index, info)
 				{
+					console.log('update people names')
 					var name_list = "";
-					for (var i = 1; i < info.length-1; i++) {
-						name_list = name_list + info[i] + ",";
+					if (info[start_index] != "No Occupancy")
+					{
+						for (var i = 1; i < info.length-1; i++) 
+						{
+							name_list = name_list + info[i] + ",";
 
-						var obj = $('button[type=button][value='+info[i]+']') // get the dom  element
+							var obj = $('button[type=button][value='+info[i]+']') // get the dom  element
 
-									if (obj != null)
-									{
-										obj.addClass('btn-success');
-									}
+										if (obj != null)
+										{
+											obj.addClass('btn-success');
+										}
 
-					};
-					name_list += info[i]
-					
-									var obj = $('button[type=button][value='+info[i]+']') // get the dom  element
+						};
+						name_list += info[i]
+						
+										var obj = $('button[type=button][value='+info[i]+']') // get the dom  element
 
-									if (obj != null)
-									{
-										obj.addClass('btn-success');
-									}
-
+										if (obj != null)
+										{
+											obj.addClass('btn-success');
+										}
+					}
+					else
+					{	
+						name_list = 'No Occupancy'
+					}
 
 					console.log(name_list);
 
-					$("#people-names").html(function(people_count_index, old){
+					$("#people-names").html(function(start_index, old){
 						if (old != name_list)
 						{
+							if (old != "No Occupancy" && old != "None")
+								{
+									if  (name_list.length < old.length || name_list == "No Occupancy")
+										{remove_green_buttons(old, name_list)}
+								}
 							return name_list;
 						}
 
@@ -134,21 +103,45 @@
 					});
 
 				}
+				
+				function remove_green_buttons(old, newl)
+				{
+					console.log("green buttons")
+					var oldn = old.split(",");
+					console.log(old);
+					var newn = newl.split(",");
+					console.log(newl);
+					for (var i = 0; i < oldn.length; i++) {
+						if (newn.indexOf(oldn[i]) == -1)
+						{
+							var obj = $('button[type=button][value='+oldn[i]+']') // get the dom  element
+							
+							if (obj != null)
+							{
+									obj.removeClass('btn-success');
+							}
+						}
+					};
+				}
 
 				function show_names()
 				{
 					$.ajax({
 						type:"GET",
 						dataType:"JSONP",
-						url:"http://127.0.0.1:7000/get_count_and_names",
+						url:"http://10.129.23.100:7000/get_count_and_names",
 						//data:{'name':tag},
 						success:function(data){
 								console.log(data);
 
 								var info = data.split(",");
 								update_people_count(0,info); // updating people count in the people count division
-								update_people_names(1,info); //updating people names in the people name division
-
+								//if (info[0] != "0")
+									update_people_names(1,info); //updating people names in the people name division
+								//else
+								//{
+								//	$("#people-names").html("No Occupancy");
+								//}
 							}
 					
 					});
@@ -219,12 +212,12 @@
   <div class="row">
 	  <div class="col-xs-2" >
 		<button type="button" class="btn btn-default btn-lg" value="uddhav" id="tag_btn1">
-			<span id="uddhav_txt">Uddhav </span>
+			Uddhav
 		</button>
 	  </div>
 	  <div class="col-xs-2">
-		<button type="button" class="btn btn-default btn-lg" value="vivekc" id="tag_btn2">
-			<span id="vivekc_txt">Siddharth</span>
+		<button type="button" class="btn btn-default btn-lg" value="siddharth" id="tag_btn2">
+			Siddharth
 		</button>
 	  </div>
 	  <div class="col-xs-2">
@@ -307,8 +300,8 @@
 		</button>
 	  </div>
 	  <div class="col-xs-2">
-		<button type="button" class="btn btn-default btn-lg" value="khatou" id="tag_btn16">
-			Khatou
+		<button type="button" class="btn btn-default btn-lg" value="keisuke" id="tag_btn16">
+			Keisuke
 		</button>
 	  </div>
 	  <div class="col-xs-2">
@@ -317,8 +310,8 @@
 		</button>
 	  </div>
 	  <div class="col-xs-2">
-		<button type="button" class="btn btn-default btn-lg" value="guest" id="tag_btn18">
-		Guest
+		<button type="button" class="btn btn-default btn-lg" value="shruti" id="tag_btn18">
+		Shruti
 		</button>
 	  </div>
 	  
@@ -328,9 +321,7 @@
 	<div class="row">
 		<div class="col-xs-6">
 			People in Lab
-			<p id="people-names">
-					None
-			</p>
+			<p id="people-names">None</p>
 	    </div>
 
 	    <div class="col-xs-6">
